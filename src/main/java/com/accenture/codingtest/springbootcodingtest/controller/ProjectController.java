@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +45,7 @@ public class ProjectController {
 //	POST create one resource (ex. POST /api/v1/projects)
 	
 	@PostMapping
+	@RolesAllowed("PRODUCT_OWNER")
 	private void createProject(@RequestBody Project project) {
 		projectService.createProject(project);
 	}

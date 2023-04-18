@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.accenture.codingtest.springbootcodingtest.model.Project;
+import com.accenture.codingtest.springbootcodingtest.model.Status;
 import com.accenture.codingtest.springbootcodingtest.model.Task;
 import com.accenture.codingtest.springbootcodingtest.model.User;
 import com.accenture.codingtest.springbootcodingtest.repository.ProjectRepository;
@@ -41,7 +42,7 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public void createTask(Task task) {
-
+		task.setStatus(Status.NOT_STARTED);
 		taskRepository.save(task);
 
 	}
