@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.accenture.codingtest.springbootcodingtest.model.Project;
@@ -19,9 +20,9 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public List<Project> findAll() {
+	public List<Project> findAll(Pageable pagination, String q) {
 
-		return projectRepository.findAll();
+		return projectRepository.findAll(pagination).stream().filter(t-> t.getName()== q).toList();
 	}
 
 	@Override

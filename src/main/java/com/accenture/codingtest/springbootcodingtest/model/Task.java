@@ -27,10 +27,10 @@ public class Task {
 	@Column(nullable = false)
 	private Status status;
 	
-	@JoinColumn(name="id", nullable=false)
+	@JoinColumn(name = "id", nullable = false)
 	private Project project_id;
 	
-	@JoinColumn(name="id", nullable=false)
+	@JoinColumn(name = "id", nullable = false)
 	private User user_id;
 
 	public String getTitle() {

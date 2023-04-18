@@ -7,6 +7,9 @@ import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.accenture.codingtest.springbootcodingtest.model.Project;
 import com.accenture.codingtest.springbootcodingtest.service.ProjectService;
-
 
 @Controller("/api/v1/projects")
 public class ProjectController {
@@ -29,13 +32,17 @@ public class ProjectController {
 		super();
 		this.projectService = projectService;
 	}
-	
+
 //	GET retrieve all resources (ex. GET /api/v1/projects)
 	@GetMapping
-	public List<Project> retrieveAllProjects() {
-		return projectService.findAll();
+	public List<Project> retrieveAllProjects(@RequestParam(required = true) String q,
+			@RequestParam(required = true) String pageIndex, @RequestParam(required = true) String pageSize,
+			@RequestParam(required = true) String sortBy, @RequestParam(required = true) String sortDirection) {
+
+		Pageable pagination = PageRequest.of(Integer.parseInt(pageIndex), Integer.parseInt(pageSize),
+				sortDirection == "ASC" ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+		return projectService.findAll(pagination, q);
 	}
-	
 
 //	GET retrieve one resource by id (ex. GET /api/v1/projects/{project_id})
 	@GetMapping("/{project_id}")
@@ -43,24 +50,25 @@ public class ProjectController {
 		return projectService.findById(id);
 	}
 //	POST create one resource (ex. POST /api/v1/projects)
-	
+
 	@PostMapping
 	@RolesAllowed("PRODUCT_OWNER")
 	private void createProject(@RequestBody Project project) {
 		projectService.createProject(project);
 	}
+
 //	PUT update one resource idempotent (ex. PUT /api/v1/projects/{project_id})
 	@PutMapping("/{project_id}")
 	private void updateProject(@RequestBody Project project, @PathVariable("project_id") UUID id) {
 		projectService.updateProject(project, id);
 	}
-	
-	
+
 //	PATCH update one resource (ex. PATCH /api/v1/projects/{project_id})
 	@PatchMapping("/{project_id}")
 	private void patchProject(@RequestBody Project project, @PathVariable("project_id") UUID id) {
 		projectService.patchProject(project, id);
 	}
+
 //	DELETE remove one resource (ex. DELETE /api/v1/projects/{project_id})
 	@DeleteMapping("/{project_id}")
 	private void deleteProject(@PathVariable("project_id") UUID id) {
